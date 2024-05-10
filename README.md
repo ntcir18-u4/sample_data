@@ -1,15 +1,16 @@
 # sample_data
+U4タスク（）のサンプルデータです。\
+U4タスクは、 **Table Retrievalサブタスク（以下、TRタスク）** と、 **Table QAサブタスク（以下、TQAタスク）** から構成されます。
 
 ## 更新情報
-
 - (2024/5/xx) sampleデータの公開
 
 ## タスク設定
-
-以下をご参照ください。
+以下をご参照ください。\
+TRタスク\
+TQAタスク
 
 ## 配布ファイル
-
 このリポジトリには以下のファイルが含まれます。
 
 - `train/datainfo.json`
@@ -25,7 +26,7 @@
 - `src/baseline.py`
     - サンプルの推論スクリプトです。ランダムに解答を埋めます。
 - `src/eval.py`
-    - 評価スクリプトです。task1、task2、task1,2トータルの3項目について、Accuracy と、F1-score を出力します。task1のみ、あるいはtask2のみ回答の場合でも、評価は可能です。
+    - 評価スクリプトです。TRタスク、TQAタスク、トータルの3項目について、Accuracy と、F1-score を出力します。TRタスクのみ、あるいはTQAタスクのみ回答の場合でも、評価は可能です。
     - 引数として、`-g [Goldデータ.jsonのパス] -i [答えを埋めたanswersheet.jsonのパス]` を取ります。
 - `src/convert.py`
     - train データの形式から、提出用のファイル形式に変換します。
@@ -49,31 +50,59 @@
 
 ```json
 {
-    "question-id": {
-        "question": "大和ハウス工業の2019年の個別のShareholdersEquityにおける「自己株式の処分」を含む表は？",
-        "task1": {
-            "context": "S100ITAZ",
-            "answer": "S100ITAZ-2020-tab1"
+    "QuestionID": {
+        "question": "質問文",
+        "table-retrieval": {
+            "context": "ディレクトリ名（DocID）",
+            "answer": {
+                "table-id": "TableID"
+            }
         },
-        "task2": {
+        "table-qa": {
+            "context": "TableID",
+            "answer": {
+                "cell-id": "CellID",
+                "cell-data": "セルの値"
+            }
+        }
+    },
+}
+```
+
+<!--
+```json
+{
+    "question1": {
+        "question": "大和ハウス工業の2019年の個別のShareholdersEquityにおける「自己株式の処分」を含む表は？",
+        "table-retrieval": {
+            "context": "S100ITAZ",
+            "answer"{
+                "table-id": "S100ITAZ-2020-tab1"
+            }
+        },
+        "table-qa": {
             "context": "S100ITAZ-2020-tab1",
-            "answer_id": "S100ITAZ-2020-tab1-r3c2",
-            "answer_data": "3812000000"
+            "answer": {
+                "cell-id": "S100ITAZ-2020-tab1-r3c2",
+                "cell-data": "3812000000"
+            }
         },
 
     }
 }
 ```
-各パラメータの詳細は、以下に示すとおりです。
-| 要素 | 型 | 説明 |
-| --- | --- | --- |
-| question-id | object | キーが質問文のidを示す。 |
-| question | string | 各タスクに共通する質問文。 |
-| task1 > context | string | task1のコンテクスト。ここでは、検索対象のファイル名。 |
-| task1 > answer | string | task1の解答。ここでは、TableID。 |
-| task2 > context | string | task2のコンテクスト。ここでは、検索対象のTableID。 |
-| task1 > answer_id | string | task2の解答。ここでは、CellID。 |
-| task1 > answer_data | string | task1の解答。ここでは、実際の値。 |
+-->
+
+各パラメータの詳細を以下に示します。
+
+| 要素 | 型 | 説明 | 例 |
+| --- | --- | --- | --- |
+| question | string | 各タスクに共通する質問文。 | 大和ハウス工業の2019年の個別のShareholdersEquityにおける「自己株式の処分」を含む表は？ |
+| table-retrieval > context | string | TRタスクで用いるコンテクスト。<br>ここでは、検索対象のHTMLが格納されたディレクトリ名を指す。 | S100ITAZ |
+| table-retrieval > answer > table-id | string | table-retrievalサブタスクの解答。ここでは、TableIDを指す。 | S100ITAZ-2020-tab1 |
+| table-qa > context | string | TQAタスクで用いるコンテクスト。ここでは、検索対象のTableIDを指す。<br> **TRタスクの解答と一致しているため、TQAタスク以外での参照を禁じます。** | S100ITAZ-2020-tab1 |
+| table-qa > answer > cell-id | string | TQAタスクの解答。ここでは、CellIDを指す。 | S100ITAZ-2020-tab1-r3c2 |
+| table-qa > answer > cell-data | string | TQAタスクの解答。ここでは、実際の値を指す。 | 3812000000 |
 
 ## 出力ファイル形式
 いずれのタスクも、`test/answersheet.json`の解答部分を埋める形式で、出力ファイルを作成してください。
@@ -89,17 +118,19 @@
     - 各「提出本文書」の「第一部」を使用しています。
 
 - 東証33業種分類の大分類（全10種）をベースに、sample_dataの対象となる有報を決定しました。\
-「農林・水産業」「鉱業」「電気・ガス業」の業種である企業が存在しなかったため、それらを除いた7つの業種からそれぞれ1社を対象としました。
+TOPIX100の算出対象企業に「農林・水産業」「鉱業」「電気・ガス業」の業種は存在しなかったため、それらを除いた7つの業種から各1社、すなわち計7社の有報を対象としました。
 
-| 大分類 | 対象企業 | DocID |
-| --- | --- | --- |
-| 水産・農林業 | 該当なし | None |
-| 鉱業 | 該当なし | None |
-| 建設業 | 大和ハウス工業株式会社 | S100ITAZ |
-| 製造業 | 株式会社バンダイナムコホールディングス | S100ISF1 |
-| 電気・ガス業 | 該当なし | None |
-| 運輸・情報通信業 | Zホールディングス株式会社 | S100IT7Z |
-| 商業 | 伊藤忠商事株式会社 | S100ITS8 |
-| 金融・保険業 | オリックス株式会社 | S100J36O |
-| 不動産業 | 三井不動産株式会社 | S100IU3A |
-| サービス業 | エムスリー株式会社 | S100J50B |
+    | 大分類 | 対象企業 | DocID |
+    | --- | --- | --- |
+    | 水産・農林業 | 該当なし | None |
+    | 鉱業 | 該当なし | None |
+    | 建設業 | 大和ハウス工業株式会社 | S100ITAZ |
+    | 製造業 | 株式会社バンダイナムコホールディングス | S100ISF1 |
+    | 電気・ガス業 | 該当なし | None |
+    | 運輸・情報通信業 | Zホールディングス株式会社 | S100IT7Z |
+    | 商業 | 伊藤忠商事株式会社 | S100ITS8 |
+    | 金融・保険業 | オリックス株式会社 | S100J36O |
+    | 不動産業 | 三井不動産株式会社 | S100IU3A |
+    | サービス業 | エムスリー株式会社 | S100J50B |
+
+
