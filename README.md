@@ -52,17 +52,17 @@ TQAタスク
 {
     "QuestionID": {
         "question": "質問文",
-        "table-retrieval": {
+        "table_retrieval": {
             "context": "ディレクトリ名（DocID）",
             "answer": {
                 "table-id": "TableID"
             }
         },
-        "table-qa": {
+        "table_qa": {
             "context": "TableID",
             "answer": {
-                "cell-id": "CellID",
-                "cell-data": "セルの値"
+                "cell_id": "CellID",
+                "cell_data": "セルの値"
             }
         }
     },
@@ -98,11 +98,11 @@ TQAタスク
 | 要素 | 型 | 説明 | 例 |
 | --- | --- | --- | --- |
 | question | string | 各タスクに共通する質問文。 | 大和ハウス工業の2019年の個別のShareholdersEquityにおける「自己株式の処分」を含む表は？ |
-| table-retrieval > context | string | TRタスクで用いるコンテクスト。<br>ここでは、検索対象のHTMLが格納されたディレクトリ名を指す。 | S100ITAZ |
-| table-retrieval > answer > table-id | string | table-retrievalサブタスクの解答。ここでは、TableIDを指す。 | S100ITAZ-2020-tab1 |
-| table-qa > context | string | TQAタスクで用いるコンテクスト。ここでは、検索対象のTableIDを指す。<br> **TRタスクの解答と一致しているため、TQAタスク以外での参照を禁じます。** | S100ITAZ-2020-tab1 |
-| table-qa > answer > cell-id | string | TQAタスクの解答。ここでは、CellIDを指す。 | S100ITAZ-2020-tab1-r3c2 |
-| table-qa > answer > cell-data | string | TQAタスクの解答。ここでは、実際の値を指す。 | 3812000000 |
+| table_retrieval > context | string | TRタスクで用いるコンテクスト。<br>ここでは、検索対象のHTMLが格納されたディレクトリ名を指す。 | S100ITAZ |
+| table_retrieval > answer > table_id | string | TRタスクの解答。ここでは、TableIDを指す。 | S100ITAZ-2020-tab1 |
+| table_qa > context | string | TQAタスクで用いるコンテクスト。ここでは、検索対象のTableIDを指す。<br> **TRタスクの解答と一致しているため、TQAタスク以外での参照を禁じます。** | S100ITAZ-2020-tab1 |
+| table_qa > answer > cell_id | string | TQAタスクの解答。ここでは、CellIDを指す。 | S100ITAZ-2020-tab1-r3c2 |
+| table_qa > answer > cell_data | string | TQAタスクの解答。ここでは、実際の値を指す。 | 3812000000 |
 
 ## 出力ファイル形式
 いずれのタスクも、`test/answersheet.json`の解答部分を埋める形式で、出力ファイルを作成してください。
