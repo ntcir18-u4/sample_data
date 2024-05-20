@@ -13,7 +13,7 @@ TQAタスク
 ## 配布ファイル
 このリポジトリには以下のファイルが含まれます。
 
-- `train/datainfo.json`
+- `train/question_information.json`
     - 各タスクのトレーニングに必要となる情報を記したもので、質問文に対する各タスクのコンテキストと解答が記載されています。
 - `train/reports/*.html`
     - 各企業が発行した有価証券報告書に情報を追加したもので、各タスク共通の train データとして使用します。
@@ -52,64 +52,30 @@ TQAタスク
 {
     "QuestionID": {
         "question": "質問文",
-        "table_retrieval": {
-            "context": "ディレクトリ名（DocID）",
-            "answer": {
-                "table-id": "TableID"
-            }
-        },
-        "table_qa": {
-            "context": "TableID",
-            "answer": {
-                "cell_id": "CellID",
-                "cell_data": "セルの値"
-            }
-        }
+        "doc_id": "DocID",
+        "table_id": "TableID",
+        "cell_id": "CellID",
+        "value": "セルの値"
     },
 }
 ```
 
-<!--
-```json
-{
-    "question1": {
-        "question": "大和ハウス工業の2019年の個別のShareholdersEquityにおける「自己株式の処分」を含む表は？",
-        "table-retrieval": {
-            "context": "S100ITAZ",
-            "answer"{
-                "table-id": "S100ITAZ-2020-tab1"
-            }
-        },
-        "table-qa": {
-            "context": "S100ITAZ-2020-tab1",
-            "answer": {
-                "cell-id": "S100ITAZ-2020-tab1-r3c2",
-                "cell-data": "3812000000"
-            }
-        },
-
-    }
-}
-```
--->
-
 各パラメータの詳細を以下に示します。
 
-| 要素 | 型 | 説明 | 例 |
+| 要素名 | 型 | 説明 | 例 |
 | --- | --- | --- | --- |
-| question | string | 各タスクに共通する質問文。 | 大和ハウス工業の2019年の個別のShareholdersEquityにおける「自己株式の処分」を含む表は？ |
-| table_retrieval > context | string | TRタスクで用いるコンテクスト。<br>ここでは、検索対象のHTMLが格納されたディレクトリ名を指す。 | S100ITAZ |
-| table_retrieval > answer > table_id | string | TRタスクの解答。ここでは、TableIDを指す。 | S100ITAZ-2020-tab1 |
-| table_qa > context | string | TQAタスクで用いるコンテクスト。ここでは、検索対象のTableIDを指す。<br> **TRタスクの解答と一致しているため、TQAタスク以外での参照を禁じます。** | S100ITAZ-2020-tab1 |
-| table_qa > answer > cell_id | string | TQAタスクの解答。ここでは、CellIDを指す。 | S100ITAZ-2020-tab1-r3c2 |
-| table_qa > answer > cell_data | string | TQAタスクの解答。ここでは、実際の値を指す。 | 3812000000 |
+| question | string | 質問文。TRタスク、TQAタスク共にqueryとして用いる。 | 大和ハウス工業の2019年の個別のShareholdersEquityにおける「自己株式の処分」を含む表は？ |
+| doc_id | string | 検索対象のHTMLが格納されたディレクトリ名。 <br> TRタスクにおいて、contextとして用いる。 | S100ITAZ |
+| table_id | string | 任意の`table`タグに付与された、`table-id`属性。 <br> TRタスクではanswer、TQAタスクではcontextとして用いる。 | S100ITAZ-2020-tab1 |
+| cell_id | string | 任意の`tr`あるいは`td`タグに付与された、`cell-id`属性。 <br> TQAタスクにおいて、answerの一つとして用いる。 | S100ITAZ-2020-tab1-r3c2 |
+| value | string | 任意のセルの値。金額表現の場合は、桁数を考慮したものとなる。 <br> TQAタスクにおいて、answerの一つとして用いる。 | 3812000000 |
 
 ## 出力ファイル形式
 いずれのタスクも、`test/answersheet.json`の解答部分を埋める形式で、出力ファイルを作成してください。
-- task1の`answer`には、`S100ITAZ-2020-tab1`というように、予測したTableIDを入力してください。
-- task2には、`answer_id`と`answer_data`の2種類の回答箇所が存在します。いずれか片方のみに予測結果を入力してください。
-    - `answer_id`には、`S100ITAZ-2020-tab1-r3c2`というように、予測したCellIDを入力してください。
-    - `answer_data`には、`3812000000`というように、予測したデータそのものを入力してください。
+- task1の`answer`には、`S100ITAZ-0101010-tab1`というように、予測したTableIDを入力してください。
+- task2には、`answer_id`と`value`の2種類の回答箇所が存在します。いずれか片方のみに予測結果を入力してください。
+    - `answer_id`には、`S100ITAZ-0101010-tab1-r3c2`というように、予測したCellIDを入力してください。
+    - `value`には、`3812000000`というように、予測したデータそのものを入力してください。
 
 ## 出典
 
@@ -117,14 +83,14 @@ TQAタスク
     - （※）例えば書類管理番号が `S100ISN0` の場合、当該ページの URL は `https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?S100ISN0` となります。書類管理番号は、`train`/`test` ディレクトリ内の各ファイル名の先頭 8 文字です。
     - 各「提出本文書」の「第一部」を使用しています。
 
-- 東証33業種分類の大分類（全10種）をベースに、sample_dataの対象となる有報を決定しました。\
-TOPIX100の算出対象企業に「農林・水産業」「鉱業」「電気・ガス業」の業種は存在しなかったため、それらを除いた7つの業種から各1社、すなわち計7社の有報を対象としました。
+- 東証33業種分類の大分類（全10種）をベースに、sample dataの対象となる有報を決定しました。\
+training dataは、TOPIX100の算出対象企業のうち、3社以上が含まれる6業種から各1社、計6社の有報を対象としました。
 
     | 大分類 | 対象企業 | DocID |
     | --- | --- | --- |
     | 水産・農林業 | 該当なし | None |
     | 鉱業 | 該当なし | None |
-    | 建設業 | 大和ハウス工業株式会社 | S100ITAZ |
+    | 建設業 | 該当なし | None |
     | 製造業 | 株式会社バンダイナムコホールディングス | S100ISF1 |
     | 電気・ガス業 | 該当なし | None |
     | 運輸・情報通信業 | Zホールディングス株式会社 | S100IT7Z |
@@ -132,5 +98,3 @@ TOPIX100の算出対象企業に「農林・水産業」「鉱業」「電気・
     | 金融・保険業 | オリックス株式会社 | S100J36O |
     | 不動産業 | 三井不動産株式会社 | S100IU3A |
     | サービス業 | エムスリー株式会社 | S100J50B |
-
-
