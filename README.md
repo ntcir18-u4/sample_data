@@ -1,14 +1,15 @@
 # sample_data
-U4タスク（）のサンプルデータです。\
+[NTCIR-18 U4タスク](https://sites.google.com/view/ntcir18-u4/home, "NTCIR-18 U4")（**U**nifying, **U**nderstanding, and **U**tilizing **U**nstructured Data in Financial Reports
+）のサンプルデータです。\
 U4タスクは、 **Table Retrievalサブタスク（以下、TRタスク）** と、 **Table QAサブタスク（以下、TQAタスク）** から構成されます。
 
 ## 更新情報
-- (2024/5/xx) sampleデータの公開
+- (2024/5/30) sampleデータの公開
 
 ## タスク設定
 以下をご参照ください。\
-TRタスク\
-TQAタスク
+[TRタスク](https://sites.google.com/view/ntcir18-u4/subtasks/table-retrieval, "Table Retrieval")\
+[TQAタスク](https://sites.google.com/view/ntcir18-u4/subtasks/table-qa, "Table QA")
 
 ## 配布ファイル
 このリポジトリには以下のファイルが含まれます。
@@ -23,14 +24,14 @@ TQAタスク
     - 各企業が発行した有価証券報告書に情報を追加したもので、各タスク共通の test データとして使用します。
 - `test/gold.json`
     - `test/answersheet.json`の解答を埋めたもので、評価のために使用します。
-- `src/baseline.py`
-    - サンプルの推論スクリプトです。ランダムに解答を埋めます。
+<!-- - `src/baseline.py`
+    - サンプルの推論スクリプトです。ランダムに解答を埋めます。 -->
 - `src/eval.py`
     - 評価スクリプトです。TRタスク、TQAタスク、トータルの3項目について、Accuracy と、F1-score を出力します。TRタスクのみ、あるいはTQAタスクのみ回答の場合でも、評価は可能です。
     - 引数として、`-g [Goldデータ.jsonのパス] -i [答えを埋めたanswersheet.jsonのパス]` を取ります。
-- `src/convert.py`
+<!-- - `src/convert.py`
     - train データの形式から、提出用のファイル形式に変換します。
-    - train データの一部を dev データとして使用する場合の、評価スクリプトに与える gold データを作成するために使用してください。
+    - train データの一部を dev データとして使用する場合の、評価スクリプトに与える gold データを作成するために使用してください。 -->
 
 ## 入力ファイル形式
 ### HTMLファイル
@@ -81,7 +82,6 @@ TQAタスク
 
 - `train` ならびに `test` ディレクトリ内のファイルは、EDINET 閲覧（提出）サイト（※）をもとに NTCIR-18 U4 タスクオーガナイザが作成したものです。
     - （※）例えば書類管理番号が `S100ISN0` の場合、当該ページの URL は `https://disclosure2.edinet-fsa.go.jp/WZEK0040.aspx?S100ISN0` となります。書類管理番号は、`train`/`test` ディレクトリ内の各ファイル名の先頭 8 文字です。
-    - 各「提出本文書」の「第一部」を使用しています。
 
 - 東証33業種分類の大分類（全10種）をベースに、sample dataの対象となる有報を決定しました。\
 training dataは、TOPIX100の算出対象企業のうち、3社以上が含まれる6業種から各1社、計6社の有報を対象としました。
