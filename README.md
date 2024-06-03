@@ -1,5 +1,5 @@
 # sample_data
-[NTCIR-18 U4タスク](https://sites.google.com/view/ntcir18-u4/home, "NTCIR-18 U4")（**U**nifying, **U**nderstanding, and **U**tilizing **U**nstructured Data in Financial Reports
+[NTCIR-18 U4タスク](https://sites.google.com/view/ntcir18-u4/, "NTCIR-18 U4")（**U**nifying, **U**nderstanding, and **U**tilizing **U**nstructured Data in Financial Reports
 ）のサンプルデータです。\
 U4タスクは、 **Table Retrievalサブタスク（以下、TRタスク）** と、 **Table QAサブタスク（以下、TQAタスク）** から構成されます。
 
@@ -8,8 +8,8 @@ U4タスクは、 **Table Retrievalサブタスク（以下、TRタスク）** �
 
 ## タスク設定
 以下をご参照ください。\
-[TRタスク](https://sites.google.com/view/ntcir18-u4/subtasks/table-retrieval, "Table Retrieval")\
-[TQAタスク](https://sites.google.com/view/ntcir18-u4/subtasks/table-qa, "Table QA")
+[TRタスク](https://sites.google.com/view/ntcir18-u4/subtasks/table-retrieval?authuser=0, "Table Retrieval")\
+[TQAタスク](https://sites.google.com/view/ntcir18-u4/subtasks/table-qa?authuser=0, "Table QA")
 
 ## 配布ファイル
 このリポジトリには以下のファイルが含まれます。
